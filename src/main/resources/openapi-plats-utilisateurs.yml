@@ -1,0 +1,304 @@
+openapi: 3.0.3
+info:
+  title: API Plats et Utilisateurs
+  description: >
+    Gestion des plats proposÃ©s par l'entreprise de livraison de repas
+    et des abonnÃ©s inscrits. ConsommÃ©e par le composant Menus et l'IHM.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/plats-utilisateurs/api
+    description: Serveur de dÃ©veloppement local
+
+tags:
+  - name: Plats
+    description: OpÃ©rations CRUD sur les plats
+  - name: Utilisateurs
+    description: OpÃ©rations CRUD sur les abonnÃ©s
+
+paths:
+
+  # â”€â”€â”€ PLATS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+  /plats:
+    get:
+      tags: [Plats]
+      summary: Lister tous les plats
+      operationId: getAllPlats
+      responses:
+        '200':
+          description: Liste des plats disponibles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Plat'
+              example:
+                - id: 1
+                  nom: "Salade niÃ§oise"
+                  description: "Salade composÃ©e avec thon, olives, Å“ufs durs et anchois"
+                  prix: 8.50
+                - id: 2
+                  nom: "AÃ¯oli"
+                  description: "Plat provenÃ§al : lÃ©gumes vapeur, morue et sauce aÃ¯oli"
+                  prix: 12.00
+
+    post:
+      tags: [Plats]
+      summary: CrÃ©er un nouveau plat
+      operationId: createPlat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlatInput'
+            example:
+              nom: "Gratin dauphinois"
+              description: "Gratin de pommes de terre Ã  la crÃ¨me et Ã  l'ail"
+              prix: 9.00
+      responses:
+        '201':
+          description: Plat crÃ©Ã©
+          headers:
+            Location:
+              description: URI du plat crÃ©Ã©
+              schema:
+                type: string
+                example: /plats/3
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plat'
+        '400':
+          description: DonnÃ©es invalides
+
+  /plats/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdPath'
+
+    get:
+      tags: [Plats]
+      summary: Obtenir un plat par son identifiant
+      operationId: getPlatById
+      responses:
+        '200':
+          description: Plat trouvÃ©
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plat'
+        '404':
+          description: Plat introuvable
+
+    put:
+      tags: [Plats]
+      summary: Remplacer un plat existant
+      operationId: updatePlat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlatInput'
+      responses:
+        '200':
+          description: Plat mis Ã  jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plat'
+        '400':
+          description: DonnÃ©es invalides
+        '404':
+          description: Plat introuvable
+
+    delete:
+      tags: [Plats]
+      summary: Supprimer un plat
+      operationId: deletePlat
+      responses:
+        '204':
+          description: Plat supprimÃ©
+        '404':
+          description: Plat introuvable
+
+  # â”€â”€â”€ UTILISATEURS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+  /utilisateurs:
+    get:
+      tags: [Utilisateurs]
+      summary: Lister tous les abonnÃ©s
+      operationId: getAllUtilisateurs
+      responses:
+        '200':
+          description: Liste des abonnÃ©s
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Utilisateur'
+
+    post:
+      tags: [Utilisateurs]
+      summary: Inscrire un nouvel abonnÃ©
+      operationId: createUtilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtilisateurInput'
+            example:
+              nom: "Dupont"
+              prenom: "Marie"
+              email: "marie.dupont@email.fr"
+              adresse: "12 rue des Lilas, 13001 Marseille"
+      responses:
+        '201':
+          description: AbonnÃ© crÃ©Ã©
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /utilisateurs/1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Utilisateur'
+        '400':
+          description: DonnÃ©es invalides
+        '409':
+          description: Email dÃ©jÃ  utilisÃ©
+
+  /utilisateurs/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdPath'
+
+    get:
+      tags: [Utilisateurs]
+      summary: Obtenir un abonnÃ© par son identifiant
+      operationId: getUtilisateurById
+      responses:
+        '200':
+          description: AbonnÃ© trouvÃ©
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Utilisateur'
+        '404':
+          description: AbonnÃ© introuvable
+
+    put:
+      tags: [Utilisateurs]
+      summary: Modifier les informations d'un abonnÃ©
+      operationId: updateUtilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtilisateurInput'
+      responses:
+        '200':
+          description: AbonnÃ© mis Ã  jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Utilisateur'
+        '404':
+          description: AbonnÃ© introuvable
+
+    delete:
+      tags: [Utilisateurs]
+      summary: Supprimer un abonnÃ©
+      operationId: deleteUtilisateur
+      responses:
+        '204':
+          description: AbonnÃ© supprimÃ©
+        '404':
+          description: AbonnÃ© introuvable
+
+components:
+
+  parameters:
+    IdPath:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+
+  schemas:
+
+    Plat:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        nom:
+          type: string
+          example: "Salade niÃ§oise"
+        description:
+          type: string
+          example: "Salade composÃ©e avec thon, olives, Å“ufs durs et anchois"
+        prix:
+          type: number
+          format: double
+          example: 8.50
+
+    PlatInput:
+      type: object
+      required: [nom, description, prix]
+      properties:
+        nom:
+          type: string
+          example: "Gratin dauphinois"
+        description:
+          type: string
+          example: "Gratin de pommes de terre Ã  la crÃ¨me et Ã  l'ail"
+        prix:
+          type: number
+          format: double
+          minimum: 0
+          example: 9.00
+
+    Utilisateur:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        nom:
+          type: string
+          example: "Dupont"
+        prenom:
+          type: string
+          example: "Marie"
+        email:
+          type: string
+          format: email
+          example: "marie.dupont@email.fr"
+        adresse:
+          type: string
+          example: "12 rue des Lilas, 13001 Marseille"
+
+    UtilisateurInput:
+      type: object
+      required: [nom, prenom, email, adresse]
+      properties:
+        nom:
+          type: string
+        prenom:
+          type: string
+        email:
+          type: string
+          format: email
+        adresse:
+          type: string
