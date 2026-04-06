@@ -12,8 +12,8 @@ import java.util.Map;
 
 @ApplicationScoped
 public class PlatRepository {
-    private List<Plat> plats = new ArrayList<Plat>();
-    private int nextId = 9;
+    protected List<Plat> plats = new ArrayList<Plat>();
+    protected int nextId = 9;
 
     /**
      * Charge les plats à partir du fichier JSON lors de l'initialisation du repository.

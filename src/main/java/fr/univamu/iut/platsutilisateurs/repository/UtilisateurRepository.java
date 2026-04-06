@@ -13,8 +13,8 @@ import java.util.Map;
 
 @ApplicationScoped
 public class UtilisateurRepository {
-    private List<Utilisateur> utilisateurs = new ArrayList<>();
-    private int nextId = 4;
+    protected List<Utilisateur> utilisateurs = new ArrayList<>();
+    protected int nextId = 4;
 
     /**
      * Charge les utilisateurs à partir du fichier JSON lors de l'initialisation du repository.
