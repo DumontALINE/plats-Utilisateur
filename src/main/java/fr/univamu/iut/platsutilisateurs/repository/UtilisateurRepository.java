@@ -16,6 +16,12 @@ public class UtilisateurRepository {
     private List<Utilisateur> utilisateurs = new ArrayList<>();
     private int nextId = 4;
 
+    /**
+     * Charge les utilisateurs à partir du fichier JSON lors de l'initialisation du repository.
+     * Le fichier JSON doit être structuré avec une clé "utilisateurs" contenant une liste d'utilisateurs,
+     * chaque utilisateur ayant les champs "id", "nom", "prenom", "email" et "adresse".
+     * En cas d'erreur lors du chargement, une trace de la pile d'erreurs sera affichée dans la console.
+     */
     @PostConstruct
     public void init() {
         try {
@@ -39,10 +45,21 @@ public class UtilisateurRepository {
         }
     }
 
+    /**
+     * Retourne la liste de tous les utilisateurs.
+     *
+     * @return une liste d'objets Utilisateur représentant tous les utilisateurs stockés dans le repository.
+     */
     public List<Utilisateur> findAll() {
         return utilisateurs;
     }
 
+    /**
+     * Recherche un utilisateur par son identifiant unique.
+     *
+     * @param id l'identifiant de l'utilisateur à rechercher.
+     * @return l'objet Utilisateur correspondant à l'identifiant fourni, ou null si aucun utilisateur n'est trouvé.
+     */
     public Utilisateur findByID(int id) {
         for (Utilisateur u : utilisateurs) {
             if (u.getId() == id) {
@@ -52,6 +69,12 @@ public class UtilisateurRepository {
         return null;
     }
 
+    /**
+     * Recherche un utilisateur par son adresse e-mail.
+     *
+     * @param email l'adresse e-mail de l'utilisateur à rechercher.
+     * @return l'objet Utilisateur correspondant à l'adresse e-mail fournie, ou null si aucun utilisateur n'est trouvé.
+     */
     public Utilisateur findByEmail(String email) {
         for (Utilisateur u : utilisateurs) {
             if (u.getEmail().equals(email)) {
@@ -61,12 +84,26 @@ public class UtilisateurRepository {
         return null;
     }
 
+    /**
+     * Crée un nouvel utilisateur et l'ajoute à la liste des utilisateurs.
+     * L'identifiant de l'utilisateur est automatiquement généré en incrémentant le compteur nextId.
+     *
+     * @param utilisateur l'objet Utilisateur à créer, qui doit contenir les informations nécessaires (nom, prénom, email, adresse).
+     * @return l'objet Utilisateur créé avec son identifiant assigné.
+     */
     public Utilisateur create(Utilisateur utilisateur) {
         utilisateur.setId(nextId++);
         utilisateurs.add(utilisateur);
         return utilisateur;
     }
 
+    /**
+     * Met à jour les informations d'un utilisateur existant identifié par son identifiant.
+     *
+     * @param id l'identifiant de l'utilisateur à mettre à jour.
+     * @param utilisateur un objet Utilisateur contenant les nouvelles informations (nom, prénom, email, adresse) à appliquer à l'utilisateur existant.
+     * @return l'objet Utilisateur mis à jour si l'utilisateur est trouvé et mis à jour avec succès, ou null si aucun utilisateur n'est trouvé avec l'identifiant fourni.
+     */
     public Utilisateur update(int id, Utilisateur utilisateur) {
         for (Utilisateur u : utilisateurs) {
             if (u.getId() == id) {
@@ -80,6 +117,12 @@ public class UtilisateurRepository {
         return null;
     }
 
+    /**
+     * Supprime un utilisateur de la liste des utilisateurs en fonction de son identifiant.
+     *
+     * @param id l'identifiant de l'utilisateur à supprimer.
+     * @return true si l'utilisateur a été trouvé et supprimé avec succès, ou false si aucun utilisateur n'est trouvé avec l'identifiant fourni.
+     */
     public boolean delete(int id) {
         for (Utilisateur u : utilisateurs) {
             if (u.getId() == id) {

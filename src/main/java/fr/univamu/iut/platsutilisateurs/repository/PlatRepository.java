@@ -15,9 +15,12 @@ public class PlatRepository {
     private List<Plat> plats = new ArrayList<Plat>();
     private int nextId = 9;
 
-    /*
-    * permet de lire la fichier Json et stoket uniquement les information plat dans un liste
-    */
+    /**
+     * Charge les plats à partir du fichier JSON lors de l'initialisation du repository.
+     * Le fichier JSON doit être structuré avec une clé "plats" contenant une liste de plats,
+     * chaque plat ayant les champs "id", "nom", "description" et "prix".
+     * En cas d'erreur lors du chargement, une trace de la pile d'erreurs sera affichée dans la console.
+     */
     @PostConstruct
     public void init(){
         try {
@@ -39,15 +42,20 @@ public class PlatRepository {
         }
     }
 
-    /*
-    * permet de retourner la liste de tous les plats
-    */
+    /**
+     * Retourne la liste de tous les plats.
+     *
+     * @return une liste d'objets Plat représentant tous les plats stockés dans le repository.
+     */
     public List<Plat> findAll(){
         return plats;
     }
 
-    /*
-     * permet de retourner un plat en fonction de son id, si le plat n'existe pas retourne null
+   /**
+     * Recherche un plat par son identifiant unique.
+     *
+     * @param id l'identifiant du plat à rechercher.
+     * @return l'objet Plat correspondant à l'identifiant fourni, ou null si aucun plat n'est trouvé.
      */
     public Plat findByID(int id) {
         for(Plat p :plats){
@@ -58,18 +66,26 @@ public class PlatRepository {
         return null;
     }
 
-    /*
-    * permet de créer un nouveau plat, le plat doit être envoyé dans le corps de la requete, le plat doit contenir un nom, une description et un prix, le champ id est généré automatiquement, retourne le plat créé
-    */
+   /**
+     * Crée un nouveau plat et l'ajoute à la liste des plats.
+     * L'identifiant du plat est automatiquement généré en incrémentant le compteur nextId.
+     *
+     * @param plat l'objet Plat à créer, qui doit contenir les informations nécessaires (nom, description, prix).
+     * @return l'objet Plat créé avec son identifiant assigné, ou null si les informations du plat sont invalides.
+     */
     public Plat create(Plat plat){
         plat.setId(nextId++);
         plats.add(plat);
         return plat;
     }
 
-    /*
-    * permet de mettre à jour un plat en fonction de son id, le plat doit être envoyé dans le corps de la requete, le plat doit contenir un nom, une description et un prix, retourne le plat mis à jour, si le plat n'existe pas retourne null
-    */
+   /**
+     * Met à jour les informations d'un plat existant identifié par son identifiant unique.
+     *
+     * @param id l'identifiant du plat à mettre à jour.
+     * @param plat l'objet Plat contenant les nouvelles informations (nom, description, prix) à appliquer au plat existant.
+     * @return l'objet Plat mis à jour, ou null si aucun plat n'est trouvé avec l'identifiant fourni.
+     */
     public Plat update(int id, Plat plat){
         for(Plat p :plats){
             if(p.getId() == id){
@@ -82,9 +98,12 @@ public class PlatRepository {
         return null;
     }
 
-    /*
-    * permet de supprimer un plat en fonction de son id, retourne true si le plat a
-    */
+    /**
+     * Supprime un plat existant identifié par son identifiant unique.
+     *
+     * @param id l'identifiant du plat à supprimer.
+     * @return true si le plat a été trouvé et supprimé avec succès, ou false si aucun plat n'est trouvé avec l'identifiant fourni.
+     */
     public boolean delete(int id){
         for(Plat p :plats){
             if(p.getId() == id){

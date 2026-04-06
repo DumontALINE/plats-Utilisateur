@@ -19,12 +19,23 @@ public class PlatResource {
     @Inject
     private PlatVerif verif;
 
+    /**
+     * Récupère tous les plats disponibles.
+     *
+     * @return Une réponse HTTP contenant la liste de tous les plats.
+     */
     @GET
     public Response getAll(){
         List<Plat> plats = verif.findAll();
         return Response.ok(plats).build();
     }
 
+    /**
+     * Récupère un plat spécifique par son ID.
+     *
+     * @param id L'ID du plat à récupérer.
+     * @return Une réponse HTTP contenant le plat correspondant ou une erreur si non trouvé.
+     */
     @GET
     @Path("/{id}")
     public Response getById(@PathParam("id") int id){
@@ -35,6 +46,12 @@ public class PlatResource {
         return Response.ok(plat).build();
     }
 
+    /**
+     * Crée un nouveau plat.
+     *
+     * @param plat L'objet Plat à créer.
+     * @return Une réponse HTTP contenant le plat créé ou une erreur si les données sont invalides.
+     */
     @POST
     public Response create(Plat plat){
         Plat newPlat = verif.create(plat);
@@ -45,16 +62,32 @@ public class PlatResource {
         return Response.created(uri).entity(newPlat).build();
     }
 
+    /**
+     * Met à jour un plat existant.
+     *
+     * @param id   L'ID du plat à mettre à jour.
+     * @param plat L'objet Plat contenant les nouvelles données.
+     * @return Une réponse HTTP contenant le plat mis à jour ou une erreur si les données sont invalides ou si le plat n'existe pas.
+     */
     @PUT
     @Path("/{id}")
-    public Response update(@PathParam("id") int id, Plat plat){
-        Plat updatedPlat = verif.update(id, plat);
-        if(updatedPlat == null){
+    public Response update(@PathParam("id") int id, Plat plat) {
+        if (plat.getNom() == null || plat.getNom().isBlank() || plat.getPrix() <= 0) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
-        return Response.ok(updatedPlat).build();
+        Plat updated = verif.update(id, plat);
+        if (updated == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(updated).build();
     }
 
+    /**
+     * Supprime un plat existant.
+     *
+     * @param id L'ID du plat à supprimer.
+     * @return Une réponse HTTP indiquant le succès de la suppression ou une erreur si le plat n'existe pas.
+     */
     @DELETE
     @Path("/{id}")
     public Response delete(@PathParam("id") int id){
